@@ -4,6 +4,9 @@ const usersRouter = require("./routes/users/usersRouter");
 const app = express();
 dotenv.config();
 const PORT = process.env.PORT || 8080;
+const connectDB = require("./config/databaseConnection");
+connectDB();
+
 
 app.use("/",usersRouter);
 
