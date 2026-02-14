@@ -6,7 +6,7 @@ dotenv.config();
 const PORT = process.env.PORT || 8080;
 const connectDB = require("./config/databaseConnection");
 connectDB();
-
+app.use(express.json());
 
 app.use("/",usersRouter);
 
