@@ -2,6 +2,7 @@
 //@route POST /api/V1/users/register
 //@access public
 const User = require("../../models/Users/User");
+const bcrypt = require("bcryptjs");
 module.exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -10,6 +11,8 @@ module.exports.register = async (req, res) => {
       throw new Error("Username already exists");
     } else {
       const newUser = new User({ username, email, password });
+      const salt = await bcrypt.genSalt(10);
+      newUser.password = await bcrypt.hash(newUser.password, salt);
       await newUser.save();
       res.json({
         status: "Success",
