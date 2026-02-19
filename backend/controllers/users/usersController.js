@@ -26,7 +26,28 @@ module.exports.register = async (req, res) => {
   } catch (err) {
     res.json({
       status: "Failure",
-      message: err.message,
+      message: err?.message,
     });
+  }
+};
+
+module.exports.login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new Error("Invalid credentials");
+    } else {
+      const isMatched = await bcrypt.compare(password, user?.password);
+      if (!isMatched) {
+        throw new Error("Invalid credentials");
+      } else {
+        user.lastLogin = new Date();
+        await user.save();
+        res.json({ status: "Success", user });
+      }
+    }
+  } catch (err) {
+    res.json({ status: "Failure", message: err?.message });
   }
 };
