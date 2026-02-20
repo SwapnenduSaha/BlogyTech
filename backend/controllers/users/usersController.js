@@ -3,6 +3,7 @@
 //@access public
 const User = require("../../models/Users/User");
 const bcrypt = require("bcryptjs");
+const generateToken = require("../../utils/generateToken");
 module.exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -31,6 +32,9 @@ module.exports.register = async (req, res) => {
   }
 };
 
+//@desc login user
+//@route POST /api/V1/users/login
+//@access public
 module.exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -44,7 +48,14 @@ module.exports.login = async (req, res) => {
       } else {
         user.lastLogin = new Date();
         await user.save();
-        res.json({ status: "Success", user });
+        res.json({
+          status: "Success",
+          _id: user?._id,
+          username: user?.username,
+          email: user?.email,
+          role: user?.role,
+          token: generateToken(user),
+        });
       }
     }
   } catch (err) {
