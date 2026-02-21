@@ -1,9 +1,16 @@
 const express = require("express");
-const { register, login } = require("../../controllers/users/usersController");
+const {
+  register,
+  login,
+  getProfile,
+} = require("../../controllers/users/usersController");
+const isLoggedIn = require("../../middlewares/isLoggedIn");
 const usersRouter = express.Router();
 
-usersRouter.post("/api/V1/users/register", register);
+usersRouter.post("/register", register);
 
-usersRouter.post("/api/V1/users/login", login);
+usersRouter.post("/login", login);
+
+usersRouter.get("/profile", isLoggedIn, getProfile);
 
 module.exports = usersRouter;

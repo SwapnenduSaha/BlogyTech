@@ -8,7 +8,7 @@ const connectDB = require("./config/databaseConnection");
 connectDB();
 app.use(express.json());
 
-app.use("/",usersRouter);
+app.use("/api/V1/users",usersRouter);
 
 
 app.listen(PORT, () => {

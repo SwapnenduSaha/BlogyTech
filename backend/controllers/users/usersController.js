@@ -62,3 +62,22 @@ module.exports.login = async (req, res) => {
     res.json({ status: "Failure", message: err?.message });
   }
 };
+
+//@desc profile view
+//@route GET /api/V1/users/profile/:id
+//@access private
+module.exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.userAuth._id);
+    res.json({
+      status: "Success",
+      message: "Profile fetched",
+      user,
+    });
+  } catch (err) {
+    res.json({
+      status: "Failure",
+      message: err?.message,
+    });
+  }
+};
