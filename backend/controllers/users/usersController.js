@@ -4,7 +4,7 @@
 const User = require("../../models/Users/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../../utils/generateToken");
-module.exports.register = async (req, res) => {
+module.exports.register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
     const user = await User.findOne({ username });
@@ -25,17 +25,14 @@ module.exports.register = async (req, res) => {
       });
     }
   } catch (err) {
-    res.json({
-      status: "Failure",
-      message: err?.message,
-    });
+    next(err);
   }
 };
 
 //@desc login user
 //@route POST /api/V1/users/login
 //@access public
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -59,14 +56,14 @@ module.exports.login = async (req, res) => {
       }
     }
   } catch (err) {
-    res.json({ status: "Failure", message: err?.message });
+    next(err);
   }
 };
 
 //@desc profile view
 //@route GET /api/V1/users/profile/:id
 //@access private
-module.exports.getProfile = async (req, res) => {
+module.exports.getProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.userAuth._id);
     res.json({
@@ -75,9 +72,6 @@ module.exports.getProfile = async (req, res) => {
       user,
     });
   } catch (err) {
-    res.json({
-      status: "Failure",
-      message: err?.message,
-    });
+    next(err);
   }
 };
