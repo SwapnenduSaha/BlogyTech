@@ -10,6 +10,12 @@ app.use(express.json());
 
 app.use("/api/V1/users", usersRouter);
 
+app.use((req,res,next) => {
+  const err = new Error(`Not found ${req.originalUrl} on the server`);
+  next(err);
+})
+
+
 app.use((err, req, res, next) => {
   const status = err?.status ? err.status : "Failed";
   const message = err?.message;
