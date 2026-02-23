@@ -5,23 +5,17 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT || 8080;
 const connectDB = require("./config/databaseConnection");
+const { globalErrorHandler, notFoundHandler } = require("./middlewares/globalErrorHandler");
 connectDB();
 app.use(express.json());
 
 app.use("/api/V1/users", usersRouter);
 
-app.use((req,res,next) => {
-  const err = new Error(`Not found ${req.originalUrl} on the server`);
-  next(err);
-})
+//?Not found error handler
+app.use(notFoundHandler);
 
-
-app.use((err, req, res, next) => {
-  const status = err?.status ? err.status : "Failed";
-  const message = err?.message;
-  const stack = err?.stack;
-  res.status(500).json({ status, message, stack });
-});
+//?Global error handler
+app.use(globalErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
