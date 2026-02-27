@@ -3,7 +3,6 @@ const Category = require("../../models/Categories/Category");
 //@desc create new category
 //@route POST /api/V1/categories
 //@access private
-
 module.exports.createCategory = async (req, res, next) => {
   const { name } = req.body;
   const category = await Category.findOne({ name });
@@ -19,4 +18,16 @@ module.exports.createCategory = async (req, res, next) => {
     });
   }
 };
+
+//@desc get all categories
+//@route GET /api/V1/categories
+//@access public
+module.exports.getAllCategories = async (req,res,next) => {
+  const categories = await Category.find({});
+  res.json({
+    status:"Success",
+    message:"All categories fetched successfully",
+    categories
+  });
+}
 
