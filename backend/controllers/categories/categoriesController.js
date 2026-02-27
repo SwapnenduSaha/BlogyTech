@@ -22,12 +22,40 @@ module.exports.createCategory = async (req, res, next) => {
 //@desc get all categories
 //@route GET /api/V1/categories
 //@access public
-module.exports.getAllCategories = async (req,res,next) => {
+module.exports.getAllCategories = async (req, res, next) => {
   const categories = await Category.find({});
   res.json({
-    status:"Success",
-    message:"All categories fetched successfully",
-    categories
+    status: "Success",
+    message: "All categories fetched successfully",
+    categories,
   });
-}
+};
 
+//@desc delete single category
+//@route DELETE /api/V1/categories/id
+//@access private
+module.exports.deleteCategory = async (req, res, next) => {
+  const category = await Category.findByIdAndDelete(req.category._id);
+  res.json({
+    status: "Success",
+    message: "Category deleted",
+    deletedCategory: category,
+  });
+};
+
+//@desc update single category
+//@route PUT /api/V1/categories/id
+//@access private
+module.exports.updateCategory = async (req, res, next) => {
+  const { name } = req.body;
+  const category = await Category.findByIdAndUpdate(
+    req.category._id,
+    { name },
+    { new: true, runValidators: true },
+  );
+  res.json({
+    status: "Success",
+    message: "Category updated",
+    updatedCategory: category,
+  });
+};
