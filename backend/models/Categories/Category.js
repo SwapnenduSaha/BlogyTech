@@ -16,15 +16,17 @@ const categorySchema = new Schema(
       type: Number,
       default: 0,
     },
-    posts: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
-    },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      }
+    ],
   },
   {
     timestamps: true,
   },
 );
 
-const Category = mongoose.model("Category",categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 module.exports = Category;
