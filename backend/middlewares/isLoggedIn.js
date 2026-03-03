@@ -8,7 +8,9 @@ const isLoggedIn = (req, res, next) => {
       next(err);
     } else {
       const userId = decoded.user.id;
-      const user = await User.findById(userId).select("username _id email role");
+      const user = await User.findById(userId).select(
+        "username _id email role",
+      );
       req.userAuth = user;
       next();
     }

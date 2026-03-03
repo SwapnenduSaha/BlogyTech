@@ -1,18 +1,18 @@
-const mongoose  = require("mongoose");
-const Category = require("../models/Categories/Category");
+const mongoose = require("mongoose");
+const asyncHandler = require("../utils/asyncHandler");
 
-module.exports.isOwner = async (req,res,next) => {
-    const categoryId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(categoryId)){
-        throw new Error("Request for invalid categories");
+module.exports.isOwner = (model, fieldname = "author") =>
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("Invalid request");
     }
-    const category = await Category.findById(categoryId);
-    if(!category){
-        throw new Error("No such category exists");
-    } else if(!category.author.equals(req.userAuth._id)){
-        throw new Error("Only the author can delete or update");
-    } else {
-        req.category = category;
-        next();
+    const document = await model.findById(id);
+    if (!document) {
+      throw new Error("No available data");
     }
-}
+    if (!document[fieldname].equals(req.userAuth._id)) {
+      throw new Error("Only the author can modify");
+    }
+    next();
+  });

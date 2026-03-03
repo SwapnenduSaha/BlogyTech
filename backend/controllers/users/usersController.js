@@ -1,13 +1,14 @@
-//@desc Register new user
-//@route POST /api/V1/users/register
-//@access public
 const User = require("../../models/Users/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../../utils/generateToken");
+
+//@desc Register new user
+//@route POST /api/V1/users/register
+//@access public
 module.exports.register = async (req, res, next) => {
   const { username, email, password } = req.body;
-  const user = await User.findOne({ username });
-  if (user) {
+  const isPresent = await User.findOne({ username });
+  if (isPresent) {
     throw new Error("Username already exists");
   } else {
     const newUser = new User({ username, email, password });

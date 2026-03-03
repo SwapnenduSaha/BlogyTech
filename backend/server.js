@@ -7,6 +7,8 @@ const connectDB = require("./config/databaseConnection");
 const { globalErrorHandler, notFoundHandler } = require("./middlewares/globalErrorHandler");
 const usersRouter = require("./routes/users/usersRouter");
 const categoriesRouter = require("./routes/categories/categoriesRouter");
+const postsRouter = require("./routes/posts/postsRouter");
+const commentsRouter = require("./routes/comments/commentsRouter");
 connectDB();
 app.use(express.json());
 
@@ -16,15 +18,17 @@ app.use("/api/V1/users",usersRouter);
 //?Setup the Category router
 app.use("/api/V1/categories", categoriesRouter);
 
+//?Setup the Post router
+app.use("/api/V1/posts",postsRouter);
+
+//?Setup the Comment router
+app.use("/api/V1/comments",commentsRouter);
+
 //?Not found error handler 
 app.use(notFoundHandler);
 
 //?Global error handler
 app.use(globalErrorHandler);
-
-app.get("/", (req, res) => {
-  res.send("Home page");
-});
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

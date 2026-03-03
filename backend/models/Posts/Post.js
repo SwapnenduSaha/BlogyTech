@@ -9,7 +9,7 @@ const postSchema = new Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: "",
     },
     claps: {
       type: Number,
@@ -29,11 +29,11 @@ const postSchema = new Schema(
       default: 0,
     },
     postViews: {
-      types: Number,
+      type: Number,
       default: 0,
     },
     category: {
-      types: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
     },
@@ -41,14 +41,14 @@ const postSchema = new Schema(
       type: Date,
       default: null,
     },
-    likedBy: [{ types: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    disLikedBy: [{ types: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    comments: [{ types: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    disLikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   },
   {
     timestamps: true,
   },
 );
 
-const Post = mongoose.model("Post",postSchema);
+const Post = mongoose.model("Post", postSchema);
 module.exports = Post;

@@ -35,7 +35,7 @@ module.exports.getAllCategories = async (req, res, next) => {
 //@route DELETE /api/V1/categories/id
 //@access private
 module.exports.deleteCategory = async (req, res, next) => {
-  const category = await Category.findByIdAndDelete(req.category._id);
+  const category = await Category.findByIdAndDelete(req.params.id);
   res.json({
     status: "Success",
     message: "Category deleted",
@@ -49,7 +49,7 @@ module.exports.deleteCategory = async (req, res, next) => {
 module.exports.updateCategory = async (req, res, next) => {
   const { name } = req.body;
   const category = await Category.findByIdAndUpdate(
-    req.category._id,
+    req.params.id,
     { name },
     { new: true, runValidators: true },
   );
