@@ -16,7 +16,7 @@ app.use(express.json());
 app.use("/api/V1/users",usersRouter);
 
 //?Setup the Category router
-app.use("/api/V1/categories", categoriesRouter);
+app.use("/api/V1/categories", categoriesRouter); 
 
 //?Setup the Post router
 app.use("/api/V1/posts",postsRouter);
