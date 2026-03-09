@@ -14,7 +14,6 @@ const postsRouter = require("./routes/posts/postsRouter");
 const commentsRouter = require("./routes/comments/commentsRouter");
 const sendEmail = require("./utils/sendEmail");
 connectDB();
-sendEmail("swapnendusaha376@gmail.com","abcd");
 app.use(express.json());
 
 //?Setup the User router
