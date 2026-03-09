@@ -1,6 +1,7 @@
 const User = require("../../models/Users/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../../utils/generateToken");
+const sendEmail = require("../../utils/sendEmail");
 
 //@desc Register new user
 //@route POST /api/V1/users/register
@@ -245,5 +246,30 @@ module.exports.unfollowUser = async (req, res, next) => {
   res.json({
     status: "Success",
     message: "Unfollow and unfollowing recorded",
+  });
+};
+
+//@desc Forgot password
+//@route POST /api/V1/users/forgot-password
+//@access public
+module.exports.forgotPassword = async (req, res, next) => {
+  //Fetching the email
+  const { email } = req.body;
+  //Finding for the email in DB
+  const user = await User.findOne({ email });
+  //Checking if the email id is registerd
+  if (!user) {
+    throw new Error("Unregistered email");
+  }
+  //Generating password reset token
+  const resetToken = await user.generatePasswordResetToken();
+  //Saving the changes inside DB
+  await user.save();
+  //Sending the reset token via email
+  await sendEmail(email, resetToken);
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Password reset token successfully sent via email",
   });
 };

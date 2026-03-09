@@ -8,6 +8,7 @@ const {
   viewAnotherProfile,
   followUser,
   unfollowUser,
+  forgotPassword,
 } = require("../../controllers/users/usersController");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 const asyncHandler = require("../../utils/asyncHandler");
@@ -16,6 +17,8 @@ const usersRouter = express.Router();
 usersRouter.post("/register", asyncHandler(register));
 
 usersRouter.post("/login", asyncHandler(login));
+
+usersRouter.post("/forgot-password",asyncHandler(forgotPassword));
 
 usersRouter.get("/profile", isLoggedIn, asyncHandler(getProfile));
 

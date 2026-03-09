@@ -4,27 +4,32 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT || 8080;
 const connectDB = require("./config/databaseConnection");
-const { globalErrorHandler, notFoundHandler } = require("./middlewares/globalErrorHandler");
+const {
+  globalErrorHandler,
+  notFoundHandler,
+} = require("./middlewares/globalErrorHandler");
 const usersRouter = require("./routes/users/usersRouter");
 const categoriesRouter = require("./routes/categories/categoriesRouter");
 const postsRouter = require("./routes/posts/postsRouter");
 const commentsRouter = require("./routes/comments/commentsRouter");
+const sendEmail = require("./utils/sendEmail");
 connectDB();
+sendEmail("swapnendusaha376@gmail.com","abcd");
 app.use(express.json());
 
 //?Setup the User router
-app.use("/api/V1/users",usersRouter);
+app.use("/api/V1/users", usersRouter);
 
 //?Setup the Category router
-app.use("/api/V1/categories", categoriesRouter); 
+app.use("/api/V1/categories", categoriesRouter);
 
 //?Setup the Post router
-app.use("/api/V1/posts",postsRouter);
+app.use("/api/V1/posts", postsRouter);
 
 //?Setup the Comment router
-app.use("/api/V1/comments",commentsRouter);
+app.use("/api/V1/comments", commentsRouter);
 
-//?Not found error handler 
+//?Not found error handler
 app.use(notFoundHandler);
 
 //?Global error handler
