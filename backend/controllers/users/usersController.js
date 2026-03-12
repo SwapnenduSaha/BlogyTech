@@ -1,5 +1,6 @@
 const User = require("../../models/Users/User");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const generateToken = require("../../utils/generateToken");
 const sendEmail = require("../../utils/sendEmail");
 
@@ -253,6 +254,9 @@ module.exports.unfollowUser = async (req, res, next) => {
 //@route POST /api/V1/users/forgot-password
 //@access public
 module.exports.forgotPassword = async (req, res, next) => {
+  if (!req.body || !req.body.email) {
+    throw new Error("No email provided.Provide your registered email");
+  }
   //Fetching the email
   const { email } = req.body;
   //Finding for the email in DB
@@ -271,5 +275,47 @@ module.exports.forgotPassword = async (req, res, next) => {
   res.json({
     status: "Success",
     message: "Password reset token successfully sent via email",
+  });
+};
+
+//@desc Reset password
+//@route POST /api/V1/users/reset-password/:resetToken
+//@access public
+module.exports.resetPassword = async (req, res, next) => {
+  //Fetching the sent token
+  const { resetToken } = req.params;
+  //If no token sent
+  if (!resetToken) {
+    throw new Error("Request with invalid token");
+  }
+  //Creating the hashed form of sent token
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  //Verifying the token inside the DB
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  //Checking if the user exists or not
+  if (!user) {
+    throw new Error("Request with invalid token");
+  }
+  //Checking if new password sent or not
+  if (!req.body || !req.body.password) {
+    throw new Error("No password sent");
+  }
+  //Creating new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(req.body.password, salt);
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  //Saving the changes inside the DB
+  await user.save();
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Password reset successfully",
   });
 };

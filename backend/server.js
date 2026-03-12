@@ -12,7 +12,6 @@ const usersRouter = require("./routes/users/usersRouter");
 const categoriesRouter = require("./routes/categories/categoriesRouter");
 const postsRouter = require("./routes/posts/postsRouter");
 const commentsRouter = require("./routes/comments/commentsRouter");
-const sendEmail = require("./utils/sendEmail");
 connectDB();
 app.use(express.json());
 

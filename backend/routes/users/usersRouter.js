@@ -9,6 +9,7 @@ const {
   followUser,
   unfollowUser,
   forgotPassword,
+  resetPassword,
 } = require("../../controllers/users/usersController");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 const asyncHandler = require("../../utils/asyncHandler");
@@ -19,6 +20,8 @@ usersRouter.post("/register", asyncHandler(register));
 usersRouter.post("/login", asyncHandler(login));
 
 usersRouter.post("/forgot-password",asyncHandler(forgotPassword));
+
+usersRouter.post("/reset-password/:resetToken",asyncHandler(resetPassword));
 
 usersRouter.get("/profile", isLoggedIn, asyncHandler(getProfile));
 
