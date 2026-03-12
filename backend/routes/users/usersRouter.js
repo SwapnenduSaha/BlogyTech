@@ -13,6 +13,7 @@ const {
 } = require("../../controllers/users/usersController");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 const asyncHandler = require("../../utils/asyncHandler");
+const sendAccountVerificationEmail = require("../../utils/sendAccountVerificationEmail");
 const usersRouter = express.Router();
 
 usersRouter.post("/register", asyncHandler(register));
@@ -22,6 +23,8 @@ usersRouter.post("/login", asyncHandler(login));
 usersRouter.post("/forgot-password",asyncHandler(forgotPassword));
 
 usersRouter.post("/reset-password/:resetToken",asyncHandler(resetPassword));
+
+usersRouter.post("/account-verification-email",isLoggedIn,asyncHandler(sendAccountVerificationEmail));
 
 usersRouter.get("/profile", isLoggedIn, asyncHandler(getProfile));
 

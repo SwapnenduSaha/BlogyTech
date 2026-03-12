@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const generateToken = require("../../utils/generateToken");
 const sendEmail = require("../../utils/sendEmail");
+const sendAccountVerificationEmail = require("../../utils/sendAccountVerificationEmail");
 
 //@desc Register new user
 //@route POST /api/V1/users/register
@@ -317,5 +318,26 @@ module.exports.resetPassword = async (req, res, next) => {
   res.json({
     status: "Success",
     message: "Password reset successfully",
+  });
+};
+
+//@desc Send account verification email
+//@route POST /api/V1/users/account-verification-email
+//@access private
+module.exports.accountVerificationEmail = async (req, res, next) => {
+  //Fetching the user's details
+  const currentUser = req.userAuth();
+  //Finding the email of logged in user
+  const email = currentUser.email;
+  //Generating account verification token
+  const verificationToken = currentUser.generateAccountVerificationToken();
+  //Saving the changes inside DB
+  await currentUser.save();
+  //Sending the reset token via email
+  await sendAccountVerificationEmail(email, verificationToken);
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Account verification token successfully sent via email",
   });
 };
