@@ -104,7 +104,7 @@ userSchema.methods.generateAccountVerificationToken = function () {
     .digest("hex");
   console.log(`Original token = ${verificationToken}`);
   console.log(`Hashed token = ${this.accountVerificationToken}`);
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  this.accountVerificationExpires = Date.now() + 10 * 60 * 1000;
   return verificationToken;
 };
 

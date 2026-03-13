@@ -10,10 +10,11 @@ const {
   unfollowUser,
   forgotPassword,
   resetPassword,
+  accountVerificationEmail,
+  verifyAccount,
 } = require("../../controllers/users/usersController");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 const asyncHandler = require("../../utils/asyncHandler");
-const sendAccountVerificationEmail = require("../../utils/sendAccountVerificationEmail");
 const usersRouter = express.Router();
 
 usersRouter.post("/register", asyncHandler(register));
@@ -24,7 +25,9 @@ usersRouter.post("/forgot-password",asyncHandler(forgotPassword));
 
 usersRouter.post("/reset-password/:resetToken",asyncHandler(resetPassword));
 
-usersRouter.post("/account-verification-email",isLoggedIn,asyncHandler(sendAccountVerificationEmail));
+usersRouter.post("/account-verification-email",isLoggedIn,asyncHandler(accountVerificationEmail));
+
+usersRouter.post("/verify-account/:verificationToken",isLoggedIn,asyncHandler(verifyAccount));
 
 usersRouter.get("/profile", isLoggedIn, asyncHandler(getProfile));
 

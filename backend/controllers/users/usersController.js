@@ -326,7 +326,7 @@ module.exports.resetPassword = async (req, res, next) => {
 //@access private
 module.exports.accountVerificationEmail = async (req, res, next) => {
   //Fetching the user's details
-  const currentUser = req.userAuth();
+  const currentUser = req.userAuth;
   //Finding the email of logged in user
   const email = currentUser.email;
   //Generating account verification token
@@ -339,5 +339,38 @@ module.exports.accountVerificationEmail = async (req, res, next) => {
   res.json({
     status: "Success",
     message: "Account verification token successfully sent via email",
+  });
+};
+
+//@desc Verify account
+//@route POST /api/V1/users/verify-account/:verificationToken
+//@access private
+module.exports.verifyAccount = async (req, res, next) => {
+  //Fetching the verification token
+  const { verificationToken } = req.params;
+  //Creating the hashed form of sent token
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex");
+  //Verifying the token inside DB
+  const user = await User.findOne({
+    accountVerificationToken: hashedToken,
+    accountVerificationExpires: { $gt: Date.now() },
+  });
+  //Checking if the user exists or not
+  if (!user) {
+    throw new Error("Request with invalid token");
+  }
+  //Updating the user
+  user.isVerified = true;
+  user.accountVerificationToken = undefined;
+  user.accountVerificationExpires = undefined;
+  //Saving the changes inside DB
+  await user.save();
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Account verified successfully",
   });
 };
