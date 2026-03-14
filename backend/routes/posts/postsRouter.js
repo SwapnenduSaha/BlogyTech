@@ -10,9 +10,10 @@ const {
 } = require("../../controllers/posts/postsController");
 const { isOwner } = require("../../middlewares/isOwner");
 const Post = require("../../models/Posts/Post");
+const isVerified = require("../../middlewares/isVerified");
 const postsRouter = express.Router();
 
-postsRouter.post("/", isLoggedIn, asyncHandler(createPost));
+postsRouter.post("/", isLoggedIn, isVerified, asyncHandler(createPost));
 
 postsRouter.get("/", asyncHandler(getAllPosts));
 
