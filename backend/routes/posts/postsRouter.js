@@ -9,6 +9,7 @@ const {
   updatePost,
   likePost,
   disLikePost,
+  clapPost,
 } = require("../../controllers/posts/postsController");
 const { isOwner } = require("../../middlewares/isOwner");
 const Post = require("../../models/Posts/Post");
@@ -28,5 +29,7 @@ postsRouter.put("/:id", isLoggedIn, isOwner(Post), asyncHandler(updatePost));
 postsRouter.put("/like/:id", isLoggedIn, asyncHandler(likePost));
 
 postsRouter.put("/dislike/:id", isLoggedIn, asyncHandler(disLikePost));
+
+postsRouter.put("/claps/:id",isLoggedIn,asyncHandler(clapPost));
 
 module.exports = postsRouter;

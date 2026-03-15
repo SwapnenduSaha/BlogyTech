@@ -165,3 +165,23 @@ module.exports.disLikePost = async (req, res, next) => {
     message: "Dislike added successfully",
   });
 };
+
+//@desc clap a post
+//@route PUT /api/V1/posts/claps/:id
+//@access private
+module.exports.clapPost = async (req, res, next) => {
+  //Fetching the id of the post
+  const postId = req.params.id;
+  //Checking if the post exists
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+  //Updating claps of the post by 1
+  await Post.findByIdAndUpdate(postId,{$inc:{claps:1}});
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Claps added successfully",
+  });
+};
