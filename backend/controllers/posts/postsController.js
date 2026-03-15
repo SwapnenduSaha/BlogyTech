@@ -81,12 +81,14 @@ module.exports.deletePost = async (req, res, next) => {
   await Category.findByIdAndUpdate(postToDelete.category, {
     $pull: { posts: postToDelete._id },
   });
-  await User.findByIdAndUpdate(postToDelete.author,{$pull:{posts:postToDelete._id}});
+  await User.findByIdAndUpdate(postToDelete.author, {
+    $pull: { posts: postToDelete._id },
+  });
   await Post.findByIdAndDelete(req.params.id);
   res.json({
     status: "Success",
     message: "Post successfully deleted",
-    deletedPost:postToDelete,
+    deletedPost: postToDelete,
   });
 };
 
@@ -103,5 +105,34 @@ module.exports.updatePost = async (req, res, next) => {
     status: "Success",
     message: "Post updated successfully",
     updatedPost,
+  });
+};
+
+//@desc like a post
+//@route PUT /api/V1/posts/like/:id
+//@access private
+module.exports.likePost = async (req, res, next) => {
+  //Fetching the id of post
+  const postId = req.params.id;
+  //Checking if the post exists
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+  //Fetching the id of logged in user
+  const currentUserId = req.userAuth._id;
+  //Adding user to likedBy and remove from disLikedBy if present
+  await Post.findByIdAndUpdate(postId, {
+    $addToSet: { likedBy: currentUserId },
+    $pull: { disLikedBy: currentUserId },
+  });
+  //Added the post in likedPost 
+  await User.findByIdAndUpdate(currentUserId, {
+    $addToSet: { likedPosts: postId },
+  });
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Like added successfully",
   });
 };

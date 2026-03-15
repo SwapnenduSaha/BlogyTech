@@ -7,6 +7,7 @@ const {
   getPost,
   deletePost,
   updatePost,
+  likePost,
 } = require("../../controllers/posts/postsController");
 const { isOwner } = require("../../middlewares/isOwner");
 const Post = require("../../models/Posts/Post");
@@ -22,5 +23,7 @@ postsRouter.get("/:id", asyncHandler(getPost));
 postsRouter.delete("/:id", isLoggedIn, isOwner(Post), asyncHandler(deletePost));
 
 postsRouter.put("/:id", isLoggedIn, isOwner(Post), asyncHandler(updatePost));
+
+postsRouter.put("/like/:id", isLoggedIn, asyncHandler(likePost));
 
 module.exports = postsRouter;
