@@ -126,7 +126,7 @@ module.exports.likePost = async (req, res, next) => {
     $addToSet: { likedBy: currentUserId },
     $pull: { disLikedBy: currentUserId },
   });
-  //Added the post in likedPost 
+  //Added the post in likedPost
   await User.findByIdAndUpdate(currentUserId, {
     $addToSet: { likedPosts: postId },
   });
@@ -134,5 +134,34 @@ module.exports.likePost = async (req, res, next) => {
   res.json({
     status: "Success",
     message: "Like added successfully",
+  });
+};
+
+//@desc dislike a post
+//@route PUT /api/V1/posts/dislike/:id
+//@access private
+module.exports.disLikePost = async (req, res, next) => {
+  //Fetching the id of post
+  const postId = req.params.id;
+  //Checking if the post exists
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+  //Fetching the id of logged in user
+  const currentUserId = req.userAuth._id;
+  //Removing the like from liked posts
+  await User.findByIdAndUpdate(currentUserId, {
+    $pull: { likedPosts: postId },
+  });
+  //Adding the user in disliked by and removing from liked by if present
+  await Post.findByIdAndUpdate(postId, {
+    $addToSet: { disLikedBy: currentUserId },
+    $pull: { likedBy: currentUserId },
+  });
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Dislike added successfully",
   });
 };
