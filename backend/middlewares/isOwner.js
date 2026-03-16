@@ -12,7 +12,7 @@ module.exports.isOwner = (model, fieldname = "author") =>
       throw new Error("No available data");
     }
     if (!document[fieldname].equals(req.userAuth._id)) {
-      throw new Error("Only the author can modify");
+      throw new Error("You are not authorizrd");
     }
     next();
   });
