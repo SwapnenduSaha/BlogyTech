@@ -44,13 +44,28 @@ module.exports.createPost = async (req, res, next) => {
 
 //@desc get all posts
 //@route GET /api/V1/posts
-//@access public
+//@access private
 module.exports.getAllPosts = async (req, res, next) => {
-  const allPosts = await Post.find({});
+  //Fetching the id of logged in user
+  const currentUserId = req.userAuth._id;
+  //Fetching all the posts from DB and populating author field but only bringing the blockedUsers array
+  //Fetching only the posts where scheduledPublished date is earlier than now (already published) orscheduledPublished is null(no scheduling)
+  const allPosts = await Post.find({
+    $or: [
+      { scheduledPublished: { $lt: new Date() } },
+      { scheduledPublished: null },
+    ],
+  }).populate("author", "blockedUsers");
+  // Filter posts to remove posts from authors who blocked the current user
+  const filteredPost = allPosts.filter(
+    (post) =>
+      !post.author.blockedUsers.some((id) => id.toString() === currentUserId.toString()),
+  );
+  //Sending response
   res.json({
     status: "Success",
     message: "All posts fetched successfully",
-    allPosts,
+    filteredPost,
   });
 };
 

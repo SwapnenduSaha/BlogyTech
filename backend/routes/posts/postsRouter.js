@@ -19,7 +19,7 @@ const postsRouter = express.Router();
 
 postsRouter.post("/", isLoggedIn, isVerified, asyncHandler(createPost));
 
-postsRouter.get("/", asyncHandler(getAllPosts));
+postsRouter.get("/", isLoggedIn, asyncHandler(getAllPosts));
 
 postsRouter.get("/:id", asyncHandler(getPost));
 
@@ -31,8 +31,13 @@ postsRouter.put("/like/:id", isLoggedIn, asyncHandler(likePost));
 
 postsRouter.put("/dislike/:id", isLoggedIn, asyncHandler(disLikePost));
 
-postsRouter.put("/claps/:id",isLoggedIn,asyncHandler(clapPost));
+postsRouter.put("/claps/:id", isLoggedIn, asyncHandler(clapPost));
 
-postsRouter.put("/schedule/:id",isLoggedIn,isOwner(Post),asyncHandler(schedulePost));
+postsRouter.put(
+  "/schedule/:id",
+  isLoggedIn,
+  isOwner(Post),
+  asyncHandler(schedulePost),
+);
 
 module.exports = postsRouter;
