@@ -178,10 +178,42 @@ module.exports.clapPost = async (req, res, next) => {
     throw new Error("Post not found");
   }
   //Updating claps of the post by 1
-  await Post.findByIdAndUpdate(postId,{$inc:{claps:1}});
+  await Post.findByIdAndUpdate(postId, { $inc: { claps: 1 } });
   //Sending response
   res.json({
     status: "Success",
     message: "Claps added successfully",
+  });
+};
+
+//@desc schedule a post
+//@route PUT /api/V1/posts/schedule/:id
+//@access private
+module.exports.schedulePost = async (req, res, next) => {
+  //Fetching the id of the post
+  const postId = req.params.id;
+  //Validating the request body
+  if (
+    !req.body ||
+    !req.body.scheduledPublished ||
+    isNaN(Date.parse(req.body.scheduledPublished))
+  ) {
+    throw new Error("No proper date for scheduling");
+  }
+  const scheduledDate = new Date(req.body.scheduledPublished);
+  if (scheduledDate < new Date()) {
+    throw new Error("Can't schedule previous date");
+  }
+  //Updating document
+  const updatedPost = await Post.findByIdAndUpdate(
+    postId,
+    { scheduledPublished: scheduledDate },
+    { new: true, runValidators: true },
+  );
+  //Sending response
+  res.json({
+    status: "Success",
+    message: "Date is scheduled successfully",
+    timeScheduled: updatedPost.scheduledPublished,
   });
 };
