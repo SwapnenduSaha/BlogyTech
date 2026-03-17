@@ -23,7 +23,7 @@ module.exports.createCategory = async (req, res, next) => {
 //@route GET /api/V1/categories
 //@access public
 module.exports.getAllCategories = async (req, res, next) => {
-  const categories = await Category.find({});
+  const categories = await Category.find({}).populate("posts");
   res.json({
     status: "Success",
     message: "All categories fetched successfully",

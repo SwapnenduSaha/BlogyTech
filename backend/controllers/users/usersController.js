@@ -59,7 +59,12 @@ module.exports.login = async (req, res, next) => {
 //@route GET /api/V1/users/profile/:id
 //@access private
 module.exports.getProfile = async (req, res, next) => {
-  const user = await User.findById(req.userAuth._id);
+  const user = await User.findById(req.userAuth._id)
+    .populate("posts")
+    .populate("followers")
+    .populate("following")
+    .populate("blockedUsers")
+    .populate("profileViewers");
   res.json({
     status: "Success",
     message: "Profile fetched",
