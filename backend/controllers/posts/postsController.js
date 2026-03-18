@@ -17,6 +17,7 @@ module.exports.createPost = async (req, res, next) => {
     content,
     category: categoryId,
     author: req?.userAuth?._id,
+    image: req.file.path,
   });
   await newPost.save();
   const category = await Category.findByIdAndUpdate(
@@ -59,7 +60,9 @@ module.exports.getAllPosts = async (req, res, next) => {
   // Filter posts to remove posts from authors who blocked the current user
   const filteredPost = allPosts.filter(
     (post) =>
-      !post.author.blockedUsers.some((id) => id.toString() === currentUserId.toString()),
+      !post.author.blockedUsers.some(
+        (id) => id.toString() === currentUserId.toString(),
+      ),
   );
   //Sending response
   res.json({

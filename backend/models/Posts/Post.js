@@ -9,7 +9,7 @@ const postSchema = new Schema(
     },
     image: {
       type: String,
-      default: "",
+      required:true,
     },
     claps: {
       type: Number,
