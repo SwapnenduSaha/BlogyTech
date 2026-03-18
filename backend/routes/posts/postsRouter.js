@@ -15,9 +15,16 @@ const {
 const { isOwner } = require("../../middlewares/isOwner");
 const Post = require("../../models/Posts/Post");
 const isVerified = require("../../middlewares/isVerified");
+const upload = require("../../config/multer");
 const postsRouter = express.Router();
 
-postsRouter.post("/", isLoggedIn, isVerified, asyncHandler(createPost));
+postsRouter.post(
+  "/",
+  isLoggedIn,
+  isVerified,
+  upload.single("file"),
+  asyncHandler(createPost),
+);
 
 postsRouter.get("/", isLoggedIn, asyncHandler(getAllPosts));
 
